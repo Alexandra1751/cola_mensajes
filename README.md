@@ -98,9 +98,12 @@ El script recibe formularios de la cola de mensajes, valida los datos y muestra 
 ## Estructura del Proyecto
 
 ## Capturas de Pantalla
-
+![Cola de Mensajes](Capturas/cola_mensajes.png)
+![Captura de Datos](Capturas/captura_datos.png)
+![Validacion](Capturas/validacion-code.png)
+![Interfaz Rabbitmq](Capturas/rabbitmq.png)
 ## Video de Demostración
-
+https://drive.google.com/drive/folders/1xTfATcHGdZhrNQrjYwLuD7WDWdFdbilh?usp=sharing
 ## Autores
 
 - Marjorie Alexandra Monta Portilla
