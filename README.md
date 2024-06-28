@@ -102,10 +102,10 @@ El script recibe formularios de la cola de mensajes, valida los datos y muestra 
 ![Captura de Datos](Capturas/captura_datos.png)
 ![Validacion](Capturas/validacion-code.png)
 ![Interfaz Rabbitmq](Capturas/rabbitmq.png)
+![Verificacion Funcionamiento](Capturas/Validacion.png)
+
 ## Video de Demostración
 https://drive.google.com/drive/folders/1xTfATcHGdZhrNQrjYwLuD7WDWdFdbilh?usp=sharing
-
-<iframe src="https://drive.google.com/uc?export=download&id=1a2B3cD4E5FgHi6Jk7L8Mn9OpQ10R" width="600" height="400" allow="autoplay"></iframe>
 
 ## Autores
 
