@@ -104,6 +104,9 @@ El script recibe formularios de la cola de mensajes, valida los datos y muestra 
 ![Interfaz Rabbitmq](Capturas/rabbitmq.png)
 ## Video de Demostración
 https://drive.google.com/drive/folders/1xTfATcHGdZhrNQrjYwLuD7WDWdFdbilh?usp=sharing
+
+<iframe src="https://drive.google.com/uc?export=download&id=1a2B3cD4E5FgHi6Jk7L8Mn9OpQ10R" width="600" height="400" allow="autoplay"></iframe>
+
 ## Autores
 
 - Marjorie Alexandra Monta Portilla
