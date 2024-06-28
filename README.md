@@ -110,11 +110,9 @@ https://drive.google.com/drive/folders/1xTfATcHGdZhrNQrjYwLuD7WDWdFdbilh?usp=sha
 ## Autores
 
 - [Marjorie Alexandra Monta Portilla](https://github.com/Alexandra1751)
-- [David Antonio Fernandez Quituizaca]
-- [Jessye Javier Solorzano Soriano]
-- [Alexandra1751](https://github.com/Alexandra1751)
-- [Nombre del Autor 2](https://github.com/usuario2)
-- [Nombre del Autor 3](https://github.com/usuario3)
+- [David Antonio Fernandez Quituizaca](https://github.com/Gudrum)
+- [Jessye Javier Solorzano Soriano](https://github.com/jessyesolorzano)
+
 ## Licencia
 
-Este proyecto está licenciado bajo la Licencia MIT. Para más información, consulta el archivo LICENSE.
+Este proyecto está licenciado bajo la Licencia MIT. Para más información, consulta el archivo LICENSE.- 
