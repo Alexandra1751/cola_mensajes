@@ -1,5 +1,3 @@
-Aquí tienes el README estructurado para las entregas 2, 3 y 4 del proyecto de Sistemas Distribuidos:
-
 ## Proyecto Integrador - Sistemas Distribuidos
 
 ### Índice
