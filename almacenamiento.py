@@ -4,80 +4,101 @@ import requests
 import json
 
 app = Flask(__name__)
-storage = {}
+almacenamiento = {}
 lock = Lock()
-followers = []
+seguidores = []
 
 @app.route('/formulario', methods=['POST'])
 def guardar_formulario():
-    data = request.json
-    form_id = data.get('id')
+    datos = request.json
+    print(f"Datos recibidos para guardar: {datos}")
+    id_formulario = datos.get('id')
     with lock:
-        if form_id in storage:
-            return jsonify({'message': 'Formulario duplicado'}), 409
-        storage[form_id] = data
-        replicate(form_id, data)
-    return jsonify({'message': 'Formulario guardado'}), 201
+        if id_formulario in almacenamiento:
+            print(f"Formulario duplicado: {id_formulario}")
+            return jsonify({'mensaje': 'Formulario duplicado'}), 409
+        almacenamiento[id_formulario] = datos
+        print(f"Formulario guardado: {id_formulario}")
+        replicar(id_formulario, datos)
+    return jsonify({'mensaje': 'Formulario guardado'}), 201
 
-@app.route('/formulario/<form_id>', methods=['GET'])
-def obtener_formulario(form_id):
+@app.route('/formulario/<id_formulario>', methods=['GET'])
+def obtener_formulario(id_formulario):
+    print(f"Solicitando formulario: {id_formulario}")
     with lock:
-        form = storage.get(form_id)
-    if form is None:
-        return jsonify({'message': 'Formulario no encontrado'}), 404
-    return jsonify(form), 200
+        formulario = almacenamiento.get(id_formulario)
+    if formulario is None:
+        print(f"Formulario no encontrado: {id_formulario}")
+        return jsonify({'mensaje': 'Formulario no encontrado'}), 404
+    return jsonify(formulario), 200
 
 @app.route('/formularios', methods=['GET'])
 def obtener_todos_formularios():
     with lock:
-        forms = list(storage.values())
-    return jsonify(forms), 200
+        formularios = list(almmacenamiento.values())
+    return jsonify(formularios), 200
 
-@app.route('/formulario/<form_id>', methods=['DELETE'])
-def eliminar_formulario(form_id):
+@app.route('/formulario/<id_formulario>', methods=['DELETE'])
+def eliminar_formulario(id_formulario):
     with lock:
-        if form_id in storage:
-            del storage[form_id]
-            return jsonify({'message': 'Formulario eliminado'}), 200
-    return jsonify({'message': 'Formulario no encontrado'}), 404
+        if id_formulario in almacenamiento:
+            del almacenamiento[id_formulario]
+            return jsonify({'mensaje': 'Formulario eliminado'}), 200
+    return jsonify({'mensaje': 'Formulario no encontrado'}), 404
 
-@app.route('/formulario/<form_id>', methods=['PUT'])
-def reemplazar_formulario(form_id):
-    data = request.json
+@app.route('/formulario/<id_formulario>', methods=['PUT'])
+def reemplazar_formulario(id_formulario):
+    datos = request.json
     with lock:
-        storage[form_id] = data
-    return jsonify({'message': 'Formulario reemplazado'}), 200
+        almacenamiento[id_formulario] = datos
+    return jsonify({'mensaje': 'Formulario reemplazado'}), 200
 
-def replicate(form_id, data):
-    for follower in followers:
-        requests.post(f"{follower}/formulario", json=data)
+def replicar(id_formulario, datos):
+    print(f"Iniciando replicación para: {id_formulario}")
+    for seguidor in seguidores:
+        try:
+            print(f"Replicando datos a seguidor: {seguidor}")
+            response = requests.post(f"{seguidor}/formulario", json=datos)
+            if response.status_code == 201:
+                print(f"Datos replicados correctamente en el seguidor: {seguidor}")
+            else:
+                print(f"Error al replicar datos en el seguidor: {seguidor}, Código de estado: {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            print(f"Error al replicar datos en el seguidor: {seguidor}, Error: {e}")
 
-@app.route('/add_follower', methods=['POST'])
-def add_follower():
-    follower_url = request.json.get('url')
-    followers.append(follower_url)
-    return jsonify({'message': 'Follower added'}), 200
+@app.route('/agregar_seguidor', methods=['POST'])
+def agregar_seguidor():
+    url_seguidor = request.json.get('url')
+    if url_seguidor not in seguidores:
+        seguidores.append(url_seguidor)
+        print(f"Seguidor agregado: {url_seguidor}")
+    return jsonify({'mensaje': 'Seguidor agregado'}), 200
 
-@app.route('/leader', methods=['POST'])
-def promote_leader():
-    new_leader_url = request.json.get('url')
-    Thread(target=sync_data_with_leader, args=(new_leader_url,)).start()
-    return jsonify({'message': 'Leader promoted'}), 200
+@app.route('/lider', methods=['POST'])
+def promover_lider():
+    url_nuevo_lider = request.json.get('url')
+    Thread(target=sincronizar_datos_con_lider, args=(url_nuevo_lider,)).start()
+    return jsonify({'mensaje': 'Líder promovido'}), 200
 
-def sync_data_with_leader(leader_url):
-    global storage
-    response = requests.get(f"{leader_url}/formularios")
-    if response.status_code == 200:
-        forms = response.json()
-        with lock:
-            for form in forms:
-                form_id = form.get('id')
-                storage[form_id] = form
-    print("Synchronization with new leader completed")
+def sincronizar_datos_con_lider(url_lider):
+    global almacenamiento
+    try:
+        respuesta = requests.get(f"{url_lider}/formularios")
+        if respuesta.status_code == 200:
+            formularios = respuesta.json()
+            with lock:
+                for formulario in formularios:
+                    id_formulario = formulario.get('id')
+                    almacenamiento[id_formulario] = formulario
+            print("Sincronización con el nuevo líder completada")
+        else:
+            print(f"Error al sincronizar datos con el nuevo líder: {url_lider}, Código de estado: {respuesta.status_code}")
+    except requests.exceptions.RequestException as e:
+        print(f"Error al sincronizar datos con el nuevo líder: {url_lider}, Error: {e}")
 
-def run_server(port):
-    app.run(port=port, threaded=True)
+def ejecutar_servidor(puerto):
+    app.run(port=puerto, threaded=True)
 
 if __name__ == '__main__':
-    port = int(input("Enter the port number: "))
-    Thread(target=run_server, args=(port,)).start()
+    puerto = int(input("Ingrese el número de puerto: "))
+    Thread(target=ejecutar_servidor, args=(puerto,)).start()
